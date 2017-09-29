@@ -1,13 +1,14 @@
 const express = require('express');
-const app = express();
 const path = require('path');
 
-app.use(express.static('public'))
+const app = express();
 
-app.get('/', function(req, res) {
-    res.sendFile(path.resolve(__dirname, 'dist', 'index.dev.html'))
-})
+app.use(express.static('public'));
 
-app.listen(3333, function() {
+app.get('/', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'dist', 'index.dev.html'));
+});
+
+app.listen(3333, () => {
     console.log('app is running');
-})
+});
