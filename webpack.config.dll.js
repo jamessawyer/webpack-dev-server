@@ -1,5 +1,6 @@
-const webpack = require('webpack')
+const webpack = require('webpack');
 const path = require('path');
+
 const library = '[name]_lib';
 
 module.exports = {
@@ -8,7 +9,7 @@ module.exports = {
             'react',
             'react-dom',
             'redux',
-            'react-redux'
+            'react-redux',
         ]
     },
     output: {
@@ -31,8 +32,7 @@ module.exports = {
         new webpack.optimize.UglifyJsPlugin({
             uglifyOptions: {
                 warning: false,
-                // compress: {
-                    
+                // compress: {      
                 // },
                 mangle: {
                     except: ['exports', 'require']

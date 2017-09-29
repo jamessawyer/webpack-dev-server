@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const OpenBrowserPlugin = require('open-browser-webpack-plugin');
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');
-const CleanPlugin = require('clean-webpack-plugin');
+// const CleanPlugin = require('clean-webpack-plugin');
 const config = require('./config');
 const manifest = require('./dll/vendors-manifest.json');
 
@@ -23,27 +23,31 @@ module.exports = {
         //     path.resolve(ENTRY_PATH, 'index.js')
         // ],
         index: [
-            'react-hot-loader/patch',  // 开启react热更新
+            'react-hot-loader/patch', // 开启react热更新
             `webpack-dev-server/client?http://${config.host}:${config.port}`, // 打包并且连接到提供的端点
             'webpack/hot/only-dev-server', // 打包客户端热加载 only- 表示只有成功更新后才热加载
-             path.resolve(ENTRY_PATH, 'index.js')  // 应用的入口点
+            path.resolve(ENTRY_PATH, 'index.js'), // 应用的入口点
         ],
-        // vendors: ['react', 'react-dom', 'redux', 'react-redux']
-        // vendors: ['react', 'react-dom', 'react-router-dom']
     },
     output: {
         path: OUTPUT_PATH,
         publicPath: '/',
-        filename: '[name].js'
+        filename: '[name].js',
     },
     devtool: 'cheap-module-eval-source-map',
     module: {
         rules: [
             {
+                enforce: 'pre',
+                test: /\.jsx?$/,
+                exclude: /node_modules/,
+                loader: 'eslint-loader',
+            },
+            {
                 test: /\.jsx?$/,
                 exclude: /node_modules/,
                 // use: ['babel-loader']
-                use: ['react-hot-loader/webpack', 'babel-loader']
+                use: ['react-hot-loader/webpack', 'babel-loader'],
             },
             {
                 test: /favicon.(png|ico)$/,
@@ -68,7 +72,7 @@ module.exports = {
                 test: /\.scss$/,
                 use: ['style-loader', 'css-loader?modules', 'sass-loader', 'postcss-loader'],
             },
-           /*  {
+            /*  {
                 test: /\.css$/,
                 exclude: /node_modules/,
                 use: [
@@ -118,7 +122,7 @@ module.exports = {
                     {
                         loader: 'url-loader',
                         options: {
-                        limit: 10000,
+                            limit: 10000,
                         },
                     },
                 ],
@@ -135,15 +139,15 @@ module.exports = {
                     }
                 ]
             }, */
-           /*  {
+            /*  {
                 test: /\.(eot|woff|ttf|woff2|svg)$/,
                 use: 'url-loader'
             } */
-        ]
+        ],
     },
     plugins: [
         new webpack.DefinePlugin({
-            'process.env.NODE_ENV': JSON.stringify('development')
+            'process.env.NODE_ENV': JSON.stringify('development'),
         }),
         new CopyWebpackPlugin([{ from: './dll/vendors.dll.js', to: 'dll.js' }]),
         // new CleanPlugin(['public']),
@@ -155,8 +159,8 @@ module.exports = {
         //     title: 'REDUX APP',
         //     showErrors: true
         // }),
-        new webpack.NoEmitOnErrorsPlugin(), //保证出错时页面不阻塞，且会在编译结束后报错
-        new webpack.NamedChunksPlugin(),    // prints more readable module name
+        new webpack.NoEmitOnErrorsPlugin(), // 保证出错时页面不阻塞，且会在编译结束后报错
+        new webpack.NamedChunksPlugin(), // prints more readable module name
         new webpack.DllReferencePlugin({ context: __dirname, manifest }),
         /* new webpack.HashedModuleIdsPlugin({ //用 HashedModuleIdsPlugin 可以轻松地实现 chunkhash 的稳定化
             name: 'vendor',
@@ -168,11 +172,11 @@ module.exports = {
             name: 'manifest'
         }), */
         new OpenBrowserPlugin({ // 自动打开浏览器
-            url: `http://${config.host}:${config.port}`
-        })
+            url: `http://${config.host}:${config.port}`,
+        }),
     ],
     resolve: {
-        extensions: ['.js', '.json', '.sass', '.scss', '.jsx']
+        extensions: ['.js', '.json', '.sass', '.scss', '.jsx'],
     },
     devServer: {
         port: 8000,
@@ -182,5 +186,5 @@ module.exports = {
         disableHostCheck: true,
         contentBase: '/', // 配置服务器目录
         publicPath: '/', // 同output的publicPath
-    }
-}
+    },
+};
